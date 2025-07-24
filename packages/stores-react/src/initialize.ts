@@ -8,7 +8,7 @@ import type {
   StoreClass,
   StoreInstance,
   StoresType,
-} from '@tts/stores';
+} from '@cimanyd/stores';
 import type { PropsWithChildren } from 'react';
 import type { CreateAllHooks } from './hooks';
 import type { HookSettings, UseContext, UseStore, UseStores } from './types';
@@ -26,10 +26,10 @@ type StoreInstances<Stores extends Record<string, StoreClass | StoreInstance>> =
       keyof Stores,
       string
     > as ToInstanceName<Key>]: Stores[Key] extends StoreClass
-      ? InstanceType<Stores[Key]>
-      : Stores[Key] extends StoreInstance
-        ? Stores[Key]
-        : never;
+    ? InstanceType<Stores[Key]>
+    : Stores[Key] extends StoreInstance
+    ? Stores[Key]
+    : never;
   };
 
 type EntryOf<T extends object> = { [Key in keyof T]: [Key, T[Key]] }[keyof T];
@@ -151,12 +151,12 @@ export type Initialize = <
   globalSettings?: HookSettings,
 ) => StoreInstances<Stores> extends infer Instances extends StoresType
   ? StoreHooks<Instances> & {
-      StoreProvider: React.FC<PropsWithChildren> & {
-        useStoreContext: UseContext<Instances>;
-      };
-      stores: Instances;
-      useStores: UseStores<Instances>;
-    }
+    StoreProvider: React.FC<PropsWithChildren> & {
+      useStoreContext: UseContext<Instances>;
+    };
+    stores: Instances;
+    useStores: UseStores<Instances>;
+  }
   : {};
 
 type ExtendStore<Store extends StoreClass> = {
@@ -179,12 +179,12 @@ type InitializeStores<
   DefinedStores extends Record<string, StoreClass>,
 > = StoreInstances<{
   [Key in
-    | keyof DefinedStores
-    | keyof DefaultStores]: Key extends keyof DefinedStores
-    ? DefinedStores[Key]
-    : Key extends keyof DefaultStores
-      ? DefaultStores[Key]
-      : never;
+  | keyof DefinedStores
+  | keyof DefaultStores]: Key extends keyof DefinedStores
+  ? DefinedStores[Key]
+  : Key extends keyof DefaultStores
+  ? DefaultStores[Key]
+  : never;
 }>;
 
 export type CreateInitializer = <
@@ -196,12 +196,12 @@ export type CreateInitializer = <
   stores: Stores,
   globalSettings?: HookSettings,
 ) => InitializeStores<DefaultStores, Stores> extends infer Instances extends
-  StoresType
-  ? StoreHooks<Instances> & {
+StoresType
+    ? StoreHooks<Instances> & {
       StoreProvider: React.FC<PropsWithChildren> & {
         useStoreContext: UseContext<Instances>;
       };
       stores: Instances;
       useStores: UseStores<Instances>;
     }
-  : {};
+    : {};

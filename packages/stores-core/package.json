@@ -2,7 +2,7 @@
   "author": "Anthony Costabile",
   "description": "A mobx inspired class based store system with full typescript support",
   "license": "ISC",
-  "name": "@tts/stores",
+  "name": "@cimanyd/stores",
   "version": "1.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",

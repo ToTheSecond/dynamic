@@ -7,7 +7,7 @@ import type {
   StoreClass,
   StoreInstance,
   StoresType,
-} from '@tts/stores';
+} from '@cimanyd/stores';
 import type {
   HookSettings,
   SelectFrom,
@@ -82,8 +82,8 @@ export type CreateUseStore = <Store extends StoreClass | StoreInstance>(
 ) => Store extends StoreClass
   ? UseStore<InstanceType<Store>>
   : Store extends StoreInstance
-    ? UseStore<Store>
-    : never;
+  ? UseStore<Store>
+  : never;
 
 export type CreateUseStores = <Stores extends StoresType>(
   source: Stores,

@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { StoresType } from '@tts/stores';
+import type { StoresType } from '@cimanyd/stores';
 import type { PropsWithChildren } from 'react';
 import type { CreateUseContext } from './hooks';
 

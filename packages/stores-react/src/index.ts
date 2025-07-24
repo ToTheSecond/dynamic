@@ -1,11 +1,11 @@
 // Project Imports
-import * as $stores from '@tts/stores';
+import * as $stores from '@cimanyd/stores';
 import createInitializerFactory from './initialize';
 import createHelpersFactory from './helpers';
 import createHooksFactory from './hooks';
 
 // Type Imports
-import type { $Stores, CreateStore, ComputedDecorator } from '@tts/stores';
+import type { $Stores, CreateStore, ComputedDecorator } from '@cimanyd/stores';
 import type { CreateSubscription, createSubscriptions } from './helpers';
 import type {
   CreateUseSelectorWithProps,

@@ -3,7 +3,7 @@ import type {
   RunInAction,
   StoreInstance,
   StoresType,
-} from '@tts/stores';
+} from '@cimanyd/stores';
 
 export type AccessTo<Source> = [() => Source, Subscribe<Source>, RunInAction];
 
@@ -21,16 +21,16 @@ export type ConnectionState<
   Select extends AnySelectFunction<Source, Helpers>,
   Helpers extends object = {},
 > = [
-  /** Dismisses the current connection, stopping all future updates. */
-  disconnect: () => void,
-  /**
-   * Updates the select method's reference, such that updates always use the
-   * most correct state.
-   */
-  maintain: (select: Select, options?: Partial<AreStatesEqualSettings>) => void,
-  /** The current cached value. */
-  value: ReturnType<Select>,
-];
+    /** Dismisses the current connection, stopping all future updates. */
+    disconnect: () => void,
+    /**
+     * Updates the select method's reference, such that updates always use the
+     * most correct state.
+     */
+    maintain: (select: Select, options?: Partial<AreStatesEqualSettings>) => void,
+    /** The current cached value. */
+    value: ReturnType<Select>,
+  ];
 
 export type ContextState<Source> = [
   /** Dismisses the current connection, stopping all future updates. */
@@ -68,12 +68,12 @@ export type SelectTarget =
 
 export type SourceFor<Target extends SelectTarget> =
   Target extends UseStore<infer Store>
-    ? Store
-    : Target extends UseStores<infer Stores>
-      ? Stores
-      : Target extends StoreInstance | StoresType
-        ? Target
-        : never;
+  ? Store
+  : Target extends UseStores<infer Stores>
+  ? Stores
+  : Target extends StoreInstance | StoresType
+  ? Target
+  : never;
 
 export type StoreEntries<Stores extends StoresType> = Array<
   {

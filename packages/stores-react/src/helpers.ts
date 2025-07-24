@@ -3,7 +3,7 @@ import type {
   StoreInstance,
   StoresType,
   Subscribe,
-} from '@tts/stores';
+} from '@cimanyd/stores';
 
 export default function createHelpers<
   StoreId extends string,

@@ -8,7 +8,7 @@ import type {
   StoreClass,
   StoreInstance,
   StoresType,
-} from '@tts/stores';
+} from '@cimanyd/stores';
 import type { AccessTo, AnySelectFunction, HookSettings, Safe } from './types';
 
 const defaultSettings: AreStatesEqualSettings = {
