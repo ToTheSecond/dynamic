@@ -3,13 +3,13 @@
   "description": "An extension to @cimanyd/stores which provides stores for react",
   "license": "ISC",
   "name": "@cimanyd/stores-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
-    "@cimanyd/stores": "^0.0.1",
+    "@cimanyd/stores": "^0.0.2",
     "@types/react": "^19.1.4"
   },
   "peerDependencies": {
-    "@cimanyd/stores": "^0.0.1",
+    "@cimanyd/stores": "^0.0.2",
     "react": "^19.1.0"
   },
   "repository": {
