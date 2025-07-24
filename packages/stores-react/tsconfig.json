@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  // React Module.
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "rootDir": "src",
+    "outDir": "dist",
+    "paths": {
+      "@tts/stores": ["../stores-core/src"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "test", "rollup.config.js"],
+  "include": ["src"],
+  "references": [{ "path": "../stores-core" }]
+}

@@ -1,0 +1,33 @@
+# Build Artefacts
+/build
+/build-ssr
+/packages/**/.rollup.cache
+/packages/**/dist
+/samples/**/build
+tsconfig.tsbuildinfo
+
+# Build Dependencies
+/node_modules
+/packages/**/node_modules
+/samples/**/node_modules
+
+# Editor directories and files
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.local
+*.log
+*.njsproj
+*.ntvs*
+*.sln
+*.suo
+*.sw?
+
+# Logs
+/logs
+lerna-debug.log*
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*

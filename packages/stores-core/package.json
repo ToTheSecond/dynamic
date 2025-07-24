@@ -1,0 +1,18 @@
+{
+  "author": "Anthony Costabile",
+  "description": "A mobx inspired class based store system with full typescript support",
+  "license": "ISC",
+  "name": "@tts/stores",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && rollup --config rollup.config.js --bundleConfigAsCjs",
+    "dev": "ts-node .",
+    "test": "jest ./test"
+  },
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "mutative": "^1.1.0"
+  }
+}

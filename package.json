@@ -1,0 +1,41 @@
+{
+  "author": "Anthony Costabile",
+  "description": "A monorepo for time-related utilities",
+  "private": true,
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "your-git-repository-url"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cd samples/enrolment-demo && npm run dev",
+    "format": "npm run format --workspaces",
+    "lint": "npm run lint --workspaces",
+    "build": "npm run build --workspaces --if-present --exclude tsc",
+    "postbuild": "rimraf -g packages/**/.rollup.cache",
+    "prebuild": "rimraf -g packages/**/dist",
+    "publish": "npm run build && npm publish --workspaces --if-present",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "eslint": "^9.25.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "jest": "^29.7.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.40.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.30.1"
+  }
+}
