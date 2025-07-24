@@ -4,15 +4,19 @@
   "license": "ISC",
   "name": "@cimanyd/stores",
   "version": "1.0.0",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "dependencies": {
+    "mutative": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ToTheSecond/dynamic.git"
+  },
   "scripts": {
     "build": "tsc --emitDeclarationOnly && rollup --config rollup.config.js --bundleConfigAsCjs",
     "dev": "ts-node .",
     "test": "jest ./test"
   },
-  "types": "dist/index.d.ts",
-  "dependencies": {
-    "mutative": "^1.1.0"
-  }
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts"
 }
