@@ -17,6 +17,7 @@ import { createGetSnapshot } from './utils';
 const enum GlobalKeys {
   GETTERS,
   LISTENERS,
+  NAME_ID,
   QUEUE,
   STORES,
   SNAPSHOTS,
@@ -62,6 +63,7 @@ interface IGlobal<
 > {
   [GlobalKeys.GETTERS]: Array<(stores: Stores, queue: StoreId[]) => void>;
   [GlobalKeys.LISTENERS]: Array<(stores: Stores, queue: StoreId[]) => void>;
+  [GlobalKeys.NAME_ID]: Record<string, StoreId>;
   [GlobalKeys.STORES]: Record<StoreId, StoreInstance>;
   [GlobalKeys.SNAPSHOTS]: Record<
     StoreId,
@@ -102,6 +104,7 @@ export function define<
   // Initialize the global stores data.
   s[GlobalKeys.GETTERS] = [] as Array<(stores: StoresType) => void>;
   s[GlobalKeys.LISTENERS] = [] as Array<(stores: StoresType) => void>;
+  s[GlobalKeys.NAME_ID] = {} as Record<string, StoreId>;
   s[GlobalKeys.STORES] = {} as Record<StoreId, StoreInstance>;
   s[GlobalKeys.SNAPSHOTS] = {} as Record<
     StoreId,
@@ -313,6 +316,12 @@ export function define<
     ] as unknown as [MetaData.STORE_CLASS, ...Array<StoreInstance<State>>];
   }
 
+  function initializeStore(storeName: string, store: StoreInstance) {
+    s[GlobalKeys.NAME_ID][storeName] = (store as $Store).$[StoreKeys.CONFIG][
+      MetaData.STORE_ID
+    ];
+  }
+
   function instancesOf<State extends object>(
     store: StoreClass<State> | StoreInstance<State>,
     allowMultiple?: false,
@@ -378,6 +387,15 @@ export function define<
     }
 
     return methods as Array<keyof $Store>;
+  }
+
+  function mountStore(storeName: string) {
+    const storeId = s[GlobalKeys.NAME_ID][storeName];
+    const store = storeId && (s[GlobalKeys.STORES][storeId] as unknown);
+
+    return Promise.resolve(
+      store && (store as { onMount(): Promise<void> }).onMount(),
+    ) as Promise<void>;
   }
 
   // Create the internal functions used by stores.
@@ -671,6 +689,10 @@ export function define<
       return this.$[StoreKeys.CURRENT] as S;
     }
 
+    protected override async onMount() {
+      // Do nothing;
+    }
+
     public override produce(
       draft: ((state: State) => void) &
         ((state: mutative.Draft<State>) => void),
@@ -759,6 +781,10 @@ export function define<
     __globalGetter: addGlobalListener.bind(null, GlobalKeys.GETTERS),
     /** Internal use only. */
     __globalListener: addGlobalListener.bind(null, GlobalKeys.LISTENERS),
+    /** Internal use only. */
+    __initialize: initializeStore,
+    /** Internal use only. */
+    __mount: mountStore,
     /** Internal use only. */
     __storeActions: storeActions,
     /** Internal use only. */

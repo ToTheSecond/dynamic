@@ -75,6 +75,10 @@ export default function createInitializerFactory<
       ] as EntryOf<Hooks>);
     }
 
+    for (const [name, store] of groupEntries) {
+      $stores.__initialize(name as string, store as StoreInstance);
+    }
+
     const storesGroup = Object.fromEntries(groupEntries) as unknown as Group;
     const storesHooks = Object.fromEntries(hooksEntries) as unknown as Hooks;
 
@@ -87,6 +91,7 @@ export default function createInitializerFactory<
     const useStores = createHooks.createUseStores(storesGroup, globalSettings);
     const context = createStoreContext(
       createHooks.createUseContext,
+      $stores.__mount as (key: string) => Promise<void>,
       storesGroup,
     );
 
