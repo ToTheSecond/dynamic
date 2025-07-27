@@ -19,6 +19,10 @@ const internalOnly = [
   'constructor',
   'getState',
   'linked',
+  'onMount',
+  'produce',
+  'reset',
+  'setState',
   'state',
 ];
 
