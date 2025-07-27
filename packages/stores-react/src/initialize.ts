@@ -46,10 +46,17 @@ export default function createInitializerFactory<
 >($stores: $Stores<StoreId, CompareOptions>, createHooks: CreateAllHooks) {
   function initialize<
     Stores extends Record<string, StoreClass | StoreInstance>,
-  >(storeKeys: string[], stores: Stores, globalSettings?: HookSettings) {
-    type Group = StoreInstances<Stores>;
+  >(
+    storeKeys: string[],
+    stores: Stores,
+    storeMiddleware: StoreMiddleware<Extract<keyof Stores, string>> = {},
+  ) {
+    type Alias = StoreInstances<Stores>;
+    type Group = NamedInstances<Alias>;
     type Hooks = StoreHooks<Group>;
+    type KeyOf = keyof Alias;
 
+    const aliasEntries = {} as Alias;
     const groupEntries = [] as Array<EntryOf<Group>>;
     const hooksEntries = [] as Array<EntryOf<Hooks>>;
     const ignoredKeys = [] as string[];
@@ -74,10 +81,11 @@ export default function createInitializerFactory<
         ? key
         : $stores.__storeConfig(store).name;
 
+      aliasEntries[key as KeyOf] = store as Alias[KeyOf];
       groupEntries.push([toInstanceName(name), store] as EntryOf<Group>);
       hooksEntries.push([
         toHookName(name),
-        createHooks.createUseStore(store, globalSettings),
+        createHooks.createUseStore(store, storeMiddleware.hookSettings),
       ] as EntryOf<Hooks>);
     }
 
@@ -94,17 +102,32 @@ export default function createInitializerFactory<
       );
     }
 
-    const useStores = createHooks.createUseStores(storesGroup, globalSettings);
+    // Add to each store, its associated linked stores (advanced feature).
+    for (const [target, linked] of Object.entries(
+      storeMiddleware.interStoreBindings ?? {},
+    ) as Array<[KeyOf, KeyOf[]]>) {
+      $stores.__addLinks(
+        aliasEntries[target],
+        linked.map((link) => [String(link), storesGroup[link as never]]),
+      );
+    }
+
+    const useStores = createHooks.createUseStores(
+      storesGroup,
+      storeMiddleware.hookSettings,
+    );
+
     const context = createStoreContext(
       createHooks.createUseContext,
       $stores.__mount as (key: string) => Promise<void>,
       storesGroup,
     );
 
-    const StoreProvider =
-      context.StoreProvider as React.FC<PropsWithChildren> & {
-        useStoreContext: UseContext<Group>;
-      };
+    const StoreProvider = context.StoreProvider as React.FC<
+      StoreProviderProps<keyof Group>
+    > & {
+      useStoreContext: UseContext<Group>;
+    };
 
     return {
       StoreProvider,
@@ -116,16 +139,20 @@ export default function createInitializerFactory<
 
   function createInitializer<DefaultStores extends Record<string, StoreClass>>(
     defaultStores: DefaultStores,
-    defaultSettings?: HookSettings,
+    defaultSettings?: StoreMiddleware<Extract<keyof DefaultStores, string>>,
   ) {
     return function initializer<Stores extends Record<string, StoreClass>>(
       stores: Stores,
-      globalSettings?: HookSettings,
+      globalSettings?: StoreMiddleware<
+        Extract<keyof DefaultStores | keyof Stores, string>
+      >,
     ) {
       return initialize(
         Object.keys(defaultStores),
         { ...defaultStores, ...stores },
-        { ...defaultSettings, ...globalSettings },
+        { ...defaultSettings, ...globalSettings } as StoreMiddleware<
+          Extract<keyof DefaultStores | keyof Stores, string>
+        >,
       );
     };
   }
