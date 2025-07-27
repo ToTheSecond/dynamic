@@ -671,6 +671,10 @@ export function define<
       return this.$[StoreKeys.CURRENT] as S;
     }
 
+    protected override async onMount() {
+      // Do nothing;
+    }
+
     public override produce(
       draft: ((state: State) => void) &
         ((state: mutative.Draft<State>) => void),

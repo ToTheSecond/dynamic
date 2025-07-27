@@ -75,6 +75,15 @@ export abstract class Store<State extends object> {
   }
 
   /**
+   * A helper which executes when using a `<StoreProvider />` component is
+   * mounted into the DOM. These providers will be exported by packages that
+   * are associated with `@cimanyd/stores`.
+   */
+  protected async onMount(): Promise<void> {
+    throw abstractError;
+  }
+
+  /**
    * A helper which allows mutative transformations to state that are handled
    * within the context of a "draft" callback. No return is expected by this
    * callback, and all transformations made to the draft are applied once the
