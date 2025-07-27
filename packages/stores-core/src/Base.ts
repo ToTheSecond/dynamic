@@ -4,7 +4,10 @@ const abstractError = new Error(
   'Cannot invoke method of abstract store class.',
 );
 
-export abstract class Store<State extends object> {
+export abstract class Store<
+  State extends object,
+  LinkedStores extends { [x: string]: Store<any, any> } = {},
+> {
   /**
    * A static property used to determine whether this is a store declaration.
    *
@@ -73,6 +76,14 @@ export abstract class Store<State extends object> {
   protected getState<S extends State>(): S {
     throw abstractError;
   }
+
+  /**
+   * A helper which returns a reference to other stores for the purpose of
+   * linking state between stores.
+   */
+  protected get linked(): LinkedStores {
+    throw abstractError;
+  };
 
   /**
    * A helper which executes when using a `<StoreProvider />` component is
@@ -163,12 +174,12 @@ export abstract class Store<State extends object> {
 
 export interface StoreConstructor<
   StoreType extends Store<State>,
-  State extends object
+  State extends object,
 > {
   new <S extends State>(
     initialState?: Partial<S> | (() => Partial<S>),
     applyOnReset?: boolean,
-  ): StoreType & { state: S }
+  ): StoreType & { state: S };
   defaultState<S extends State>(): S;
   isStore: boolean;
 }

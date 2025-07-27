@@ -32,6 +32,7 @@ const enum StoreKeys {
   PENDING,
   PREVIOUS,
   REGISTER,
+  SUBSCIPTIONS,
 }
 
 const enum MetaData {
@@ -55,6 +56,7 @@ interface IStore<StoreId extends string, State extends object> {
   [StoreKeys.REGISTER]: (
     listener: (store: StoreInstance<State>) => void,
   ) => () => void;
+  [StoreKeys.SUBSCIPTIONS]: Record<string, StoreInstance>;
 }
 
 interface IGlobal<
@@ -86,7 +88,7 @@ export interface CreateStore<
 class StoreType<State extends object> extends Store<State> {}
 
 // Keys to be ignored when method binding.
-const ignoreList = ['constructor', '__isLocked', 'state'];
+const ignoreList = ['constructor', 'linked', 'state'];
 
 export function define<
   StoreId extends string,
@@ -135,6 +137,16 @@ export function define<
     // Return a function which ensures the removal of this registration.
     return function removeGlobalListener() {
       s[domain] = s[domain].filter((next) => next !== listener);
+    };
+  }
+
+  function addStoreLinks(
+    store: StoreInstance,
+    links: Array<[string, StoreInstance]>,
+  ) {
+    (store as $Store).$[StoreKeys.SUBSCIPTIONS] = {
+      ...(store as $Store).$[StoreKeys.SUBSCIPTIONS],
+      ...Object.fromEntries(links),
     };
   }
 
@@ -662,6 +674,7 @@ export function define<
         this,
         StoreKeys.LISTENERS,
       ) as (listener: (store: StoreInstance<State>) => void) => () => void;
+      $[StoreKeys.SUBSCIPTIONS] = {};
 
       // Then, set the internal properties within this instance.
       this.$ = $;
@@ -679,10 +692,6 @@ export function define<
       s[GlobalKeys.SNAPSHOTS][storeId] = createGetSnapshot(
         this as StoreInstance,
       );
-    }
-
-    protected get __isLocked() {
-      return isResourceLocked(this.$[StoreKeys.CONFIG][MetaData.STORE_ID]);
     }
 
     protected override getState<S extends State>() {
@@ -765,12 +774,18 @@ export function define<
       return this;
     }
 
+    public get linked() {
+      return this.$[StoreKeys.SUBSCIPTIONS];
+    }
+
     public get state() {
       return this.getState();
     }
   }
 
   return {
+    /** Internal use only. */
+    __addLinks: addStoreLinks,
     /** Internal use only. */
     __areEqual: defaults.areEqual,
     /** Internal use only. */

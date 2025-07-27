@@ -32,10 +32,16 @@ export type Subscribe<Source> = (
 ) => () => void;
 
 /** The Typescript definition of a Store class declaration. */
-export type StoreClass<State extends object = any> = typeof Store<State>;
+export type StoreClass<
+  State extends object = any,
+  LinkedStores extends Record<string, Store<any, any>> = any,
+> = typeof Store<State, LinkedStores>;
 
 /** The Typescript definition of an instatianted Store. */
-export type StoreInstance<State extends object = any> = Store<State>;
+export type StoreInstance<
+  State extends object = any,
+  LinkedStores extends Record<string, Store<any, any>> = any,
+> = Store<State, LinkedStores>;
 
 /** A look-up object of Store instance types. */
 export type StoresType = Record<string, StoreInstance>;

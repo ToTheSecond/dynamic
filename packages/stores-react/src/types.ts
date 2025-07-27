@@ -4,6 +4,7 @@ import type {
   StoreInstance,
   StoresType,
 } from '@cimanyd/stores';
+import type { ToInstanceName } from './utils';
 
 export type AccessTo<Source> = [() => Source, Subscribe<Source>, RunInAction];
 
@@ -80,6 +81,11 @@ export type StoreEntries<Stores extends StoresType> = Array<
     [Key in keyof Stores]: [Key, Stores[Key]];
   }[keyof Stores]
 >;
+
+export interface StoreMiddleware<StoreKey extends string> {
+  interStoreBindings?: Partial<{ [Key in StoreKey]: Array<ToInstanceName<StoreKey>> }>;
+  hookSettings?: HookSettings;
+}
 
 export type Subscribe<Source> = (
   listener: (source: Source) => void,

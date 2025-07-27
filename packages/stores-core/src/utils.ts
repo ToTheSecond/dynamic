@@ -1,3 +1,4 @@
+import { INVISIBLE_CHARACTER } from '@cimanyd/node-utils';
 import type { StoreEntries, StoreInstance, StoresType } from './types';
 
 const enum Mapping {
@@ -11,7 +12,19 @@ type Descriptor<T = any> = TypedPropertyDescriptor<T> & {
   get: { (): T; isComputed?: boolean };
 };
 
-const internalOnly = ['$', 'action', 'constructor', 'getState', 'state'];
+const stateLabel = `${INVISIBLE_CHARACTER}state`;
+const internalOnly = [
+  '$',
+  'action',
+  'constructor',
+  'getState',
+  'linked',
+  'onMount',
+  'produce',
+  'reset',
+  'setState',
+  'state',
+];
 
 function shouldSkip(property: string) {
   return internalOnly.includes(property) || property.startsWith('#');
@@ -55,8 +68,22 @@ export function createGetSnapshot<Store extends StoreInstance>(store: Store) {
   }
 
   function getStoreSnapshot(instance: any) {
+    const linked = Object.entries(instance.linked);
+
     // Create a reference object to store the snapshot data.
-    const fauxStore = { state: { ...instance.state } } as any;
+    const fauxStore = {
+      ...(linked.length > 0
+        ? {
+            '#linked': Object.fromEntries(
+              linked.map(([name, store]) => [
+                name,
+                Object.getPrototypeOf(store),
+              ]),
+            ),
+          }
+        : {}),
+      [stateLabel]: { ...instance.state },
+    } as any;
 
     // Cycle through each mapping identified when the store was processed.
     for (const [key, type] of mappings) {
