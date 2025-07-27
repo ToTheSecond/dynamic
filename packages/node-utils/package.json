@@ -1,13 +1,9 @@
 {
   "author": "Anthony Costabile",
-  "description": "A mobx inspired class based store system with full typescript support",
+  "description": "A library of common utilities for use with @cimanyd packages",
   "license": "ISC",
-  "name": "@cimanyd/stores",
+  "name": "@cimanyd/node-utils",
   "version": "0.0.2",
-  "dependencies": {
-    "@cimanyd/node-utils": "^0.0.2",
-    "mutative": "^1.1.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ToTheSecond/dynamic.git"
