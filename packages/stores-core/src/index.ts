@@ -8,8 +8,8 @@ export * from './Store';
 // Type Exports
 // ----------------------------------------------------------------------------
 
+export type { AreEqualOptions as AreStatesEqualSettings } from '@cimanyd/node-utils';
 export type { Store, StoreConstructor } from './Base';
-export type { AreEqualOptions as AreStatesEqualSettings } from './defaults';
 export type {
   ActionType,
   ComputedGet,
