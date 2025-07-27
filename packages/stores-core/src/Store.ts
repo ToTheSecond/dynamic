@@ -88,7 +88,7 @@ export interface CreateStore<
 class StoreType<State extends object> extends Store<State> {}
 
 // Keys to be ignored when method binding.
-const ignoreList = ['constructor', '__isLocked', 'linked', 'state'];
+const ignoreList = ['constructor', 'linked', 'state'];
 
 export function define<
   StoreId extends string,
@@ -692,10 +692,6 @@ export function define<
       s[GlobalKeys.SNAPSHOTS][storeId] = createGetSnapshot(
         this as StoreInstance,
       );
-    }
-
-    protected get __isLocked() {
-      return isResourceLocked(this.$[StoreKeys.CONFIG][MetaData.STORE_ID]);
     }
 
     protected override getState<S extends State>() {
