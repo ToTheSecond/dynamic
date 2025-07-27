@@ -3,9 +3,9 @@
   "description": "A mobx inspired class based store system with full typescript support",
   "license": "ISC",
   "name": "@cimanyd/stores",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
-    "@cimanyd/node-utils": "^0.0.2",
+    "@cimanyd/node-utils": "^0.0.3",
     "mutative": "^1.1.0"
   },
   "repository": {

@@ -9,7 +9,7 @@ tsconfig.tsbuildinfo
 # Build Dependencies
 /node_modules
 /packages/**/node_modules
-/samples/**/node_modules
+/sample/**/node_modules
 
 # Editor directories and files
 .DS_Store
