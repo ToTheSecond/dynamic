@@ -1,0 +1,19 @@
+{
+  "author": "Anthony Costabile",
+  "description": "A library of common utilities for use with @cimanyd packages",
+  "license": "ISC",
+  "name": "@cimanyd/node-utils",
+  "version": "0.0.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ToTheSecond/dynamic.git"
+  },
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && rollup --config rollup.config.js --bundleConfigAsCjs",
+    "dev": "ts-node .",
+    "test": "jest ./test"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts"
+}
