@@ -17,6 +17,7 @@ import { createGetSnapshot } from './utils';
 const enum GlobalKeys {
   GETTERS,
   LISTENERS,
+  NAME_ID,
   QUEUE,
   STORES,
   SNAPSHOTS,
@@ -62,6 +63,7 @@ interface IGlobal<
 > {
   [GlobalKeys.GETTERS]: Array<(stores: Stores, queue: StoreId[]) => void>;
   [GlobalKeys.LISTENERS]: Array<(stores: Stores, queue: StoreId[]) => void>;
+  [GlobalKeys.NAME_ID]: Record<string, StoreId>;
   [GlobalKeys.STORES]: Record<StoreId, StoreInstance>;
   [GlobalKeys.SNAPSHOTS]: Record<
     StoreId,
@@ -102,6 +104,7 @@ export function define<
   // Initialize the global stores data.
   s[GlobalKeys.GETTERS] = [] as Array<(stores: StoresType) => void>;
   s[GlobalKeys.LISTENERS] = [] as Array<(stores: StoresType) => void>;
+  s[GlobalKeys.NAME_ID] = {} as Record<string, StoreId>;
   s[GlobalKeys.STORES] = {} as Record<StoreId, StoreInstance>;
   s[GlobalKeys.SNAPSHOTS] = {} as Record<
     StoreId,
@@ -311,6 +314,12 @@ export function define<
         (next): next is StoreInstance<State> => next instanceof store,
       ),
     ] as unknown as [MetaData.STORE_CLASS, ...Array<StoreInstance<State>>];
+  }
+
+  function initializeStore(storeName: string, store: StoreInstance) {
+    s[GlobalKeys.NAME_ID][storeName] = (store as $Store).$[StoreKeys.CONFIG][
+      MetaData.STORE_ID
+    ];
   }
 
   function instancesOf<State extends object>(
@@ -763,6 +772,8 @@ export function define<
     __globalGetter: addGlobalListener.bind(null, GlobalKeys.GETTERS),
     /** Internal use only. */
     __globalListener: addGlobalListener.bind(null, GlobalKeys.LISTENERS),
+    /** Internal use only. */
+    __initialize: initializeStore,
     /** Internal use only. */
     __storeActions: storeActions,
     /** Internal use only. */
