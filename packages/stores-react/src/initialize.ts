@@ -91,6 +91,7 @@ export default function createInitializerFactory<
     const useStores = createHooks.createUseStores(storesGroup, globalSettings);
     const context = createStoreContext(
       createHooks.createUseContext,
+      $stores.__mount as (key: string) => Promise<void>,
       storesGroup,
     );
 

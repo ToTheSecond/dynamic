@@ -389,6 +389,15 @@ export function define<
     return methods as Array<keyof $Store>;
   }
 
+  function mountStore(storeName: string) {
+    const storeId = s[GlobalKeys.NAME_ID][storeName];
+    const store = storeId && (s[GlobalKeys.STORES][storeId] as unknown);
+
+    return Promise.resolve(
+      store && (store as { onMount(): Promise<void> }).onMount(),
+    ) as Promise<void>;
+  }
+
   // Create the internal functions used by stores.
   function notify<Args extends unknown[]>(
     listeners: Array<(...update: Args) => void>,
@@ -774,6 +783,8 @@ export function define<
     __globalListener: addGlobalListener.bind(null, GlobalKeys.LISTENERS),
     /** Internal use only. */
     __initialize: initializeStore,
+    /** Internal use only. */
+    __mount: mountStore,
     /** Internal use only. */
     __storeActions: storeActions,
     /** Internal use only. */
