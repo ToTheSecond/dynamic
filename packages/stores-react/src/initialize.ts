@@ -1,5 +1,5 @@
 // Project Imports
-import { createStoreContext } from './context';
+import { createStoreContext, StoreProviderProps } from './context';
 import { toHookName, toInstanceName } from './utils';
 
 // Type Imports
@@ -9,9 +9,14 @@ import type {
   StoreInstance,
   StoresType,
 } from '@cimanyd/stores';
-import type { PropsWithChildren } from 'react';
 import type { CreateAllHooks } from './hooks';
-import type { HookSettings, UseContext, UseStore, UseStores } from './types';
+import type {
+  HookSettings,
+  StoreMiddleware,
+  UseContext,
+  UseStore,
+  UseStores,
+} from './types';
 import type { ToHookName, ToInstanceName } from './utils';
 
 type StoreHooks<Stores extends Record<string, StoreInstance>> = {
@@ -22,15 +27,16 @@ type StoreHooks<Stores extends Record<string, StoreInstance>> = {
 
 type StoreInstances<Stores extends Record<string, StoreClass | StoreInstance>> =
   {
-    [Key in Extract<
-      keyof Stores,
-      string
-    > as ToInstanceName<Key>]: Stores[Key] extends StoreClass
+    [Key in keyof Stores]: Stores[Key] extends StoreClass
     ? InstanceType<Stores[Key]>
     : Stores[Key] extends StoreInstance
     ? Stores[Key]
     : never;
   };
+
+type NamedInstances<Stores extends Record<string, StoreInstance>> = {
+  [Key in Extract<keyof Stores, string> as ToInstanceName<Key>]: Stores[Key];
+};
 
 type EntryOf<T extends object> = { [Key in keyof T]: [Key, T[Key]] }[keyof T];
 
@@ -156,7 +162,7 @@ export type Initialize = <
   globalSettings?: HookSettings,
 ) => StoreInstances<Stores> extends infer Instances extends StoresType
   ? StoreHooks<Instances> & {
-    StoreProvider: React.FC<PropsWithChildren> & {
+    StoreProvider: React.FC<StoreProviderProps<keyof Instances>> & {
       useStoreContext: UseContext<Instances>;
     };
     stores: Instances;
@@ -183,9 +189,9 @@ type InitializeStores<
   DefaultStores extends Record<string, StoreClass>,
   DefinedStores extends Record<string, StoreClass>,
 > = StoreInstances<{
-  [Key in
-  | keyof DefinedStores
-  | keyof DefaultStores]: Key extends keyof DefinedStores
+  [Key in keyof DefinedStores | keyof DefaultStores as ToInstanceName<
+    Extract<Key, string>
+  >]: Key extends keyof DefinedStores
   ? DefinedStores[Key]
   : Key extends keyof DefaultStores
   ? DefaultStores[Key]
@@ -196,14 +202,16 @@ export type CreateInitializer = <
   DefaultStores extends Record<string, StoreClass>,
 >(
   defaultStores: DefaultStores,
-  defaultSettings?: HookSettings,
+  defaultSettings?: StoreMiddleware<Extract<keyof DefaultStores, string>>,
 ) => <Stores extends ExtendStores<DefaultStores>>(
   stores: Stores,
-  globalSettings?: HookSettings,
+  globalSettings?: StoreMiddleware<
+    Extract<keyof DefaultStores | keyof Stores, string>
+  >,
 ) => InitializeStores<DefaultStores, Stores> extends infer Instances extends
 StoresType
     ? StoreHooks<Instances> & {
-      StoreProvider: React.FC<PropsWithChildren> & {
+      StoreProvider: React.FC<StoreProviderProps<keyof Instances>> & {
         useStoreContext: UseContext<Instances>;
       };
       stores: Instances;
