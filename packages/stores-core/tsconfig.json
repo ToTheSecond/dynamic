@@ -3,8 +3,12 @@
   // Vanilla Module.
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@cimanyd/node-utils": ["../node-utils/src"]
+    }
   },
   "exclude": ["node_modules", "dist", "test", "rollup.config.js"],
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../node-utils" }]
 }
