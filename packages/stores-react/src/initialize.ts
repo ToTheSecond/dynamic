@@ -186,7 +186,7 @@ export type Initialize = <
   Stores extends Record<string, StoreClass | StoreInstance>,
 >(
   stores: Stores,
-  globalSettings?: HookSettings,
+  globalSettings?: StoreMiddleware<Extract<keyof Stores, string>>,
 ) => StoreInstances<Stores> extends infer Instances extends StoresType
   ? StoreHooks<Instances> & {
     StoreProvider: React.FC<StoreProviderProps<keyof Instances>> & {
